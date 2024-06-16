@@ -1,0 +1,33 @@
+services:
+  pte-db:
+    image: pte-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - networkmysql
+
+  pte-rest-api:
+    image: pte-rest-api
+    ports:
+      - "9010:9010"
+    environment:
+      MYSQL_HOST: pte-db
+      MYSQL_PORT: 3306
+      MYSQL_DB_NAME: PTE_DB
+      MYSQL_USER: dbuser1
+      MYSQL_PASSWORD: dbpassword1
+    networks:
+      - networkmysql
+    depends_on:
+      - pte-db
+
+  pte-front-end: 
+    image: pte-front-end
+    ports:
+      - "5173:5173"
+
+networks:
+  networkmysql:
+    driver: bridge
